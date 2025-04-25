@@ -1,7 +1,8 @@
-package com.vuog.telebotmanager.infrastructure.bot;
+package com.vuog.telebotmanager.infrastructure.bot.handler;
 
-import com.vuog.telebotmanager.application.service.CommandHandlerService;
+import com.vuog.telebotmanager.application.service.impl.CommandHandlerServiceImpl;
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
+import com.vuog.telebotmanager.infrastructure.bot.LongPollingBotBase;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,7 +16,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 public class LongPollingBotHandler extends LongPollingBotBase {
 
-    private CommandHandlerService commandHandlerService;
+    private CommandHandlerServiceImpl commandHandlerServiceImpl;
 
     public LongPollingBotHandler(TelegramBot bot) {
         super(bot);
@@ -30,8 +31,8 @@ public class LongPollingBotHandler extends LongPollingBotBase {
             try {
                 if (text.startsWith("/")) {
                     handleCommand(message);
-                    if (commandHandlerService != null) {
-                        commandHandlerService.handleUpdate(update, bot.getId());
+                    if (commandHandlerServiceImpl != null) {
+                        commandHandlerServiceImpl.handleUpdate(update, bot.getId());
                     }
                 } else {
                     handleMessage(message);

@@ -1,4 +1,4 @@
-package com.vuog.telebotmanager.web.bot.dto;
+package com.vuog.telebotmanager.application.command;
 
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
 import jakarta.validation.Valid;

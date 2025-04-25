@@ -1,5 +1,5 @@
 // BotStatusResponse.java
-package com.vuog.telebotmanager.web.bot.dto;
+package com.vuog.telebotmanager.application.dto;
 
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot.BotStatus;
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot.UpdateMethod;

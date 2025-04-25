@@ -1,7 +1,8 @@
 // WebhookBotHandler.java
-package com.vuog.telebotmanager.infrastructure.bot;
+package com.vuog.telebotmanager.infrastructure.bot.handler;
 
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
+import com.vuog.telebotmanager.infrastructure.bot.WebhookBotBase;
 import lombok.extern.log4j.Log4j2;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

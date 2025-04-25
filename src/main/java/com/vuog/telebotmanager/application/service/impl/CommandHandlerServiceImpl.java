@@ -1,6 +1,8 @@
-package com.vuog.telebotmanager.application.service;
+package com.vuog.telebotmanager.application.service.impl;
 
 
+import com.vuog.telebotmanager.application.service.BotHandlerRegistry;
+import com.vuog.telebotmanager.application.service.CommandRegistry;
 import com.vuog.telebotmanager.infrastructure.bot.BotHandler;
 import com.vuog.telebotmanager.infrastructure.bot.CommandContext;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +16,7 @@ import java.util.function.Consumer;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CommandHandlerService {
+public class CommandHandlerServiceImpl {
 
     private final BotHandlerRegistry botHandlerRegistry;
     private final CommandRegistry commandRegistry;

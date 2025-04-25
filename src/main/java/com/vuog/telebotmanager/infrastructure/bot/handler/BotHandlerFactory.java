@@ -1,6 +1,7 @@
-package com.vuog.telebotmanager.infrastructure.bot;
+package com.vuog.telebotmanager.infrastructure.bot.handler;
 
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
+import com.vuog.telebotmanager.infrastructure.bot.BotHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

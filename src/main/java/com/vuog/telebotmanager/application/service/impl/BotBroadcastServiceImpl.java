@@ -1,4 +1,4 @@
-package com.vuog.telebotmanager.application.service;
+package com.vuog.telebotmanager.application.service.impl;
 
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
 import com.vuog.telebotmanager.domain.bot.repository.TelegramBotRepository;
@@ -6,7 +6,7 @@ import com.vuog.telebotmanager.infrastructure.bot.BotRunner;
 import com.vuog.telebotmanager.infrastructure.bot.BotHandler;
 import com.vuog.telebotmanager.infrastructure.bot.LongPollingBotBase;
 import com.vuog.telebotmanager.infrastructure.bot.WebhookBotBase;
-import com.vuog.telebotmanager.infrastructure.exception.BotNotFoundException;
+import com.vuog.telebotmanager.common.exception.BotNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BroadcastService {
+public class BotBroadcastServiceImpl {
     private final TelegramBotRepository botRepository;
     private final BotRunner botRunner;
 

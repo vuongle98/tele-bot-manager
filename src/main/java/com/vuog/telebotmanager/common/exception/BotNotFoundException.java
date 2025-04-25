@@ -1,4 +1,4 @@
-package com.vuog.telebotmanager.infrastructure.exception;
+package com.vuog.telebotmanager.common.exception;
 
 public class BotNotFoundException extends RuntimeException {
     public BotNotFoundException(Long botId) {

@@ -1,9 +1,11 @@
 package com.vuog.telebotmanager.infrastructure.bot;
 
 import com.vuog.telebotmanager.application.service.BotHandlerRegistry;
-import com.vuog.telebotmanager.application.service.CommandHandlerService;
+import com.vuog.telebotmanager.application.service.impl.CommandHandlerServiceImpl;
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
 import com.vuog.telebotmanager.domain.bot.repository.TelegramBotRepository;
+import com.vuog.telebotmanager.infrastructure.bot.handler.BotHandlerFactory;
+import com.vuog.telebotmanager.infrastructure.bot.handler.LongPollingBotHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -29,7 +31,7 @@ public class BotRunner implements BotHandlerRegistry {
 
     private final ApplicationContext applicationContext;
 
-    private CommandHandlerService commandHandlerService;
+    private CommandHandlerServiceImpl commandHandlerServiceImpl;
 
     public synchronized void startBot(TelegramBot bot) throws TelegramApiException {
         if (runningBots.containsKey(bot.getId())) {
@@ -104,10 +106,10 @@ public class BotRunner implements BotHandlerRegistry {
 
         if (handler instanceof LongPollingBotHandler pollingHandler) {
 
-            if (commandHandlerService == null) {
-                commandHandlerService = applicationContext.getBean(CommandHandlerService.class);
+            if (commandHandlerServiceImpl == null) {
+                commandHandlerServiceImpl = applicationContext.getBean(CommandHandlerServiceImpl.class);
             }
-            pollingHandler.setCommandHandlerService(commandHandlerService);
+            pollingHandler.setCommandHandlerServiceImpl(commandHandlerServiceImpl);
         }
 
         return handler;

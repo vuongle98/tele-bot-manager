@@ -1,9 +1,12 @@
-package com.vuog.telebotmanager.web.bot;
+package com.vuog.telebotmanager.interfaces;
 
-import com.vuog.telebotmanager.application.service.BotService;
+import com.vuog.telebotmanager.application.command.CreateBotRequest;
+import com.vuog.telebotmanager.application.command.ScheduleMessageRequest;
+import com.vuog.telebotmanager.application.command.UpdateBotConfigRequest;
+import com.vuog.telebotmanager.application.service.impl.BotServiceImpl;
 import com.vuog.telebotmanager.common.dto.ApiResponse;
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
-import com.vuog.telebotmanager.web.bot.dto.*;
+import com.vuog.telebotmanager.application.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,28 +21,28 @@ import java.util.List;
 @RequestMapping("/api/v1/bots")
 @RequiredArgsConstructor
 public class BotController {
-    private final BotService botService;
+    private final BotServiceImpl botServiceImpl;
 
     @PostMapping
     public ResponseEntity<ApiResponse<TelegramBot>> createBot(@RequestBody CreateBotRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(botService.createBot(request)));
+        return ResponseEntity.ok(ApiResponse.success(botServiceImpl.createBot(request)));
     }
 
     @PostMapping("/{id}/start")
     public ResponseEntity<Void> startBot(@PathVariable Long id) throws TelegramApiException {
-        botService.startBot(id);
+        botServiceImpl.startBot(id);
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/{id}/stop")
     public ResponseEntity<Void> stopBot(@PathVariable Long id) {
-        botService.stopBot(id);
+        botServiceImpl.stopBot(id);
         return ResponseEntity.accepted().build();
     }
 
     @GetMapping("/status")
     public ResponseEntity<ApiResponse<List<BotStatusResponse>>> getAllStatuses() {
-        return ResponseEntity.ok(ApiResponse.success(botService.getAllBotStatuses()));
+        return ResponseEntity.ok(ApiResponse.success(botServiceImpl.getAllBotStatuses()));
     }
 
     @PatchMapping("/{id}/config")
@@ -47,7 +50,7 @@ public class BotController {
         @PathVariable Long id,
         @Valid @RequestBody UpdateBotConfigRequest request
     ) throws TelegramApiException {
-        botService.updateBotConfiguration(id, request);
+        botServiceImpl.updateBotConfiguration(id, request);
         return ResponseEntity.accepted().build();
     }
 
@@ -55,7 +58,7 @@ public class BotController {
     public ResponseEntity<ApiResponse<Page<BotResponseDto>>> getAllBots(
             Pageable pageable
     ) {
-        Page<BotResponseDto> bots = botService.getBotsPageable(pageable).map(BotResponseDto::fromEntity);
+        Page<BotResponseDto> bots = botServiceImpl.getBotsPageable(pageable).map(BotResponseDto::fromEntity);
         return ResponseEntity.ok(
                 ApiResponse.success(bots)
         );
@@ -67,7 +70,7 @@ public class BotController {
         @RequestBody ScheduleMessageRequest request
     ) {
         return ResponseEntity.ok(
-                ApiResponse.success(ScheduledMessageResponseDto.fromEntity(botService.scheduleMessage(id, request)))
+                ApiResponse.success(ScheduledMessageResponseDto.fromEntity(botServiceImpl.scheduleMessage(id, request)))
         );
     }
 
@@ -76,14 +79,14 @@ public class BotController {
             @PathVariable Long id,
             @RequestBody ScheduleMessageRequest request
     ) {
-        botService.cancelScheduledMessage(id);
+        botServiceImpl.cancelScheduledMessage(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}/scheduled-messages")
     public ResponseEntity<ApiResponse<List<ScheduledMessageResponseDto>>> getScheduledMessages(@PathVariable Long id) {
         return ResponseEntity.ok(
-            ApiResponse.success(botService.getScheduledMessages(id).stream()
+            ApiResponse.success(botServiceImpl.getScheduledMessages(id).stream()
                 .map(ScheduledMessageResponseDto::fromEntity)
                 .toList())
         );
@@ -91,7 +94,7 @@ public class BotController {
 
     @DeleteMapping("/scheduled-messages/{messageId}/cancel")
     public ResponseEntity<Void> cancelScheduledMessage(@PathVariable Long messageId) {
-        botService.cancelScheduledMessage(messageId);
+        botServiceImpl.cancelScheduledMessage(messageId);
         return ResponseEntity.noContent().build();
     }
 }

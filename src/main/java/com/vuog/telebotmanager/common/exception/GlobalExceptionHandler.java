@@ -1,4 +1,4 @@
-package com.vuog.telebotmanager.infrastructure.exception;
+package com.vuog.telebotmanager.common.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

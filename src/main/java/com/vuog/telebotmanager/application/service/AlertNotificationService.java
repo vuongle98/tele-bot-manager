@@ -5,7 +5,7 @@ import com.vuog.telebotmanager.domain.bot.repository.TelegramBotRepository;
 import com.vuog.telebotmanager.infrastructure.bot.BotHandler;
 import com.vuog.telebotmanager.infrastructure.bot.LongPollingBotBase;
 import com.vuog.telebotmanager.infrastructure.bot.WebhookBotBase;
-import com.vuog.telebotmanager.infrastructure.exception.BotNotFoundException;
+import com.vuog.telebotmanager.common.exception.BotNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;

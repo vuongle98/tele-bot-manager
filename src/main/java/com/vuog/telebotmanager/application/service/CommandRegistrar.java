@@ -13,7 +13,7 @@ public class CommandRegistrar {
     @PostConstruct
     public void registerCommands() {
         commandRegistry.registerCommand("start", context ->
-            context.reply("👋 Welcome! I'm your friendly bot.")
+                context.reply("👋 Welcome! I'm your friendly bot.")
         );
 
         commandRegistry.registerCommand("help", context -> {

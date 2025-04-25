@@ -1,4 +1,4 @@
-package com.vuog.telebotmanager.application.service;
+package com.vuog.telebotmanager.application.service.impl;
 
 import com.vuog.telebotmanager.domain.bot.model.ScheduledMessage;
 import com.vuog.telebotmanager.domain.bot.repository.ScheduledMessageRepository;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MessageSchedulingService {
+public class MessageSchedulingServiceImpl {
     private final ScheduledMessageRepository messageRepository;
     private final BotRunner botRunner;
     

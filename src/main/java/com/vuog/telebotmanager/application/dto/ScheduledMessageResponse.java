@@ -1,4 +1,4 @@
-package com.vuog.telebotmanager.web.bot.dto;
+package com.vuog.telebotmanager.application.dto;
 
 import java.time.LocalDateTime;
 

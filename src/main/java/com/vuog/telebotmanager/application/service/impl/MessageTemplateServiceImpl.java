@@ -1,4 +1,4 @@
-package com.vuog.telebotmanager.application.service;
+package com.vuog.telebotmanager.application.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class MessageTemplateService {
+public class MessageTemplateServiceImpl {
     public String renderTemplate(String template, Map<String, String> variables) {
         String result = template;
         for (Map.Entry<String, String> entry : variables.entrySet()) {
