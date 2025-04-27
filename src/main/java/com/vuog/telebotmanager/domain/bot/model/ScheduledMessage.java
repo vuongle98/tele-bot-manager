@@ -29,4 +29,6 @@ public class ScheduledMessage {
     private Boolean isRecurring;
     private Duration recurrenceInterval;
     private Boolean isSent;
+    private LocalDateTime sentAt;
+    private Boolean isCancelled;
 }

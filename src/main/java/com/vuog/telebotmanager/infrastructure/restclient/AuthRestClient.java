@@ -28,7 +28,7 @@ public class AuthRestClient extends BaseRestClient {
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
             ApiResponse<UserResponseDto> apiResponse = response.getBody();
-            return apiResponse.getData(); // Assuming 'getData()' returns the User object
+            return apiResponse.getData();
         }
 
         throw new RuntimeException("Failed to verify token");

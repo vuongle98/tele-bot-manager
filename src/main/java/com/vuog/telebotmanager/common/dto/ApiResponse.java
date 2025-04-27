@@ -13,6 +13,12 @@ public class ApiResponse<T> {
     private T data;
     private String error;
 
+    public ApiResponse(boolean success, String message, T data) {
+        this.success = success;
+        this.message = message;
+        this.data = data;
+    }
+
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(true, "Success", data, null);
     }

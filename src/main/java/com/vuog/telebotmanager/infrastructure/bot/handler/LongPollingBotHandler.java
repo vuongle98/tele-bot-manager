@@ -1,6 +1,6 @@
 package com.vuog.telebotmanager.infrastructure.bot.handler;
 
-import com.vuog.telebotmanager.application.service.impl.CommandHandlerServiceImpl;
+import com.vuog.telebotmanager.application.service.CommandHandlerServiceImpl;
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
 import com.vuog.telebotmanager.infrastructure.bot.LongPollingBotBase;
 import lombok.Setter;
@@ -11,11 +11,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-
-@Setter
 @Slf4j
+@Setter
 public class LongPollingBotHandler extends LongPollingBotBase {
-
     private CommandHandlerServiceImpl commandHandlerServiceImpl;
 
     public LongPollingBotHandler(TelegramBot bot) {
@@ -50,7 +48,7 @@ public class LongPollingBotHandler extends LongPollingBotBase {
 
     @Override
     public Long getBotId() {
-        return bot.getId();  // Assuming TelegramBot has an ID field
+        return bot.getId();
     }
 
     private void handleCommand(Message message) throws TelegramApiException {

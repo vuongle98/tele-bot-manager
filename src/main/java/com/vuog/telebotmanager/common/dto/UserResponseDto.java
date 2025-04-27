@@ -15,8 +15,8 @@ public class UserResponseDto implements Serializable {
     private Long id;
     private String username;
     private String email;
-    private List<String> roles;
-    private List<String> permissions;
+    private List<RoleDto> roles;
+    private List<PermissionDto> permissions;
     private Boolean locked;
 
     public UserResponseDto(String username, String email) {

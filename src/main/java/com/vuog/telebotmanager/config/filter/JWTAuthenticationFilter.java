@@ -1,6 +1,8 @@
 package com.vuog.telebotmanager.config.filter;
 
 
+import com.vuog.telebotmanager.common.dto.PermissionDto;
+import com.vuog.telebotmanager.common.dto.RoleDto;
 import com.vuog.telebotmanager.common.dto.UserResponseDto;
 import com.vuog.telebotmanager.infrastructure.service.AuthService;
 import jakarta.servlet.FilterChain;
@@ -41,8 +43,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
                 if (user != null) {
                     // Get roles and permissions from the user
-                    List<String> roles = user.getRoles(); // Assuming getRoles() returns a List of role names
-                    List<String> permissions = user.getPermissions(); // Assuming getPermissions() returns a List of permissions
+                    List<String> roles = user.getRoles().stream().map(RoleDto::getCode).toList(); // Assuming getRoles() returns a List of role names
+                    List<String> permissions = user.getPermissions().stream().map(PermissionDto::getCode).toList(); // Assuming getPermissions() returns a List of permissions
 
                     // Create an authentication token with the user details, roles, and permissions
                     UsernamePasswordAuthenticationToken authentication =

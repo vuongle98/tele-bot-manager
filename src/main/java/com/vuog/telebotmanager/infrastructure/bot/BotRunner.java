@@ -1,7 +1,7 @@
 package com.vuog.telebotmanager.infrastructure.bot;
 
-import com.vuog.telebotmanager.application.service.BotHandlerRegistry;
-import com.vuog.telebotmanager.application.service.impl.CommandHandlerServiceImpl;
+import com.vuog.telebotmanager.application.service.CommandHandlerServiceImpl;
+import com.vuog.telebotmanager.common.enums.CommonEnum;
 import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
 import com.vuog.telebotmanager.domain.bot.repository.TelegramBotRepository;
 import com.vuog.telebotmanager.infrastructure.bot.handler.BotHandlerFactory;
@@ -74,6 +74,16 @@ public class BotRunner implements BotHandlerRegistry {
         return instance.getHandler();
     }
 
+    @Override
+    public void registerHandler(Long botId, BotHandler handler) {
+        runningBots.put(botId, new BotInstance(null, handler));
+    }
+
+    @Override
+    public void unregisterHandler(Long botId) {
+        runningBots.remove(botId);
+    }
+
     public synchronized void stopBot(Long botId) {
         BotInstance instance = runningBots.get(botId);
         if (instance != null) {
@@ -118,7 +128,7 @@ public class BotRunner implements BotHandlerRegistry {
     private void handleCrashedBot(Long botId) {
         runningBots.remove(botId);
         botRepository.findById(botId).ifPresent(bot -> {
-            bot.setStatus(TelegramBot.BotStatus.ERRORED);
+            bot.setStatus(CommonEnum.BotStatus.ERRORED);
             botRepository.save(bot);
             log.warn("Marked bot {} as errored", botId);
         });
