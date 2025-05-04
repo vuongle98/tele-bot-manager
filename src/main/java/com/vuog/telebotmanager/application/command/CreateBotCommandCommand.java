@@ -16,4 +16,5 @@ public class CreateBotCommandCommand implements Serializable {
     private String responseTemplate;
     private String description;
     private String additionalConfig;
+    private String handlerMethod;
 }

@@ -13,4 +13,5 @@ public class BotCommandQuery implements Serializable {
 
     private String command;
     private String description;
+    private String handlerMethod;
 }

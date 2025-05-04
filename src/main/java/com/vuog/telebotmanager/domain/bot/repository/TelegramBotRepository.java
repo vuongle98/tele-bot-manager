@@ -20,7 +20,7 @@ public interface TelegramBotRepository {
     List<TelegramBot> findByOwner(User owner);
     
     // Find all bots by status
-    List<TelegramBot> findByStatus(BotStatus status);
+    List<TelegramBot> findAllByStatus(BotStatus status);
     
     // Find by name and owner (for uniqueness check)
     Optional<TelegramBot> findByNameAndOwner(String name, User owner);

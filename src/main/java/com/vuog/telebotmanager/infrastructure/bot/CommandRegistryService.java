@@ -48,7 +48,7 @@ public class CommandRegistryService {
      * @param botCommand The command to register
      */
     public void registerSingleCommand(BotCommand botCommand) {
-        if (botCommand.getIsEnabled()) {
+        if (botCommand.getIsEnabled() && !commandRegistry.isRegistered(generateCommandKey(botCommand))) {
             String commandKey = generateCommandKey(botCommand);
             commandRegistry.registerCommand(commandKey, context -> defaultCommandHandler.handleCommand(botCommand, context));
             log.debug("Registered command: {} for bot ID: {}", botCommand.getCommand(), botCommand.getBot().getId());

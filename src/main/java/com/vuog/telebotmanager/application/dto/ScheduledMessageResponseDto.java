@@ -37,10 +37,10 @@ public class ScheduledMessageResponseDto {
         dto.setChatId(entity.getChatId());
         dto.setMessageText(entity.getMessageText());
         dto.setScheduledTime(entity.getScheduledTime());
-        dto.setIsRecurring(entity.getIsRecurring());
+        dto.setIsRecurring(entity.getIsRecurring() != null && entity.getIsRecurring());
         
         // Format recurrence interval for display
-        if (entity.getIsRecurring() && entity.getRecurrenceInterval() != null) {
+        if (entity.getIsRecurring() != null && entity.getIsRecurring() && entity.getRecurrenceInterval() != null) {
             dto.setRecurrencePattern(formatRecurrenceInterval(entity.getRecurrenceInterval()));
         }
         

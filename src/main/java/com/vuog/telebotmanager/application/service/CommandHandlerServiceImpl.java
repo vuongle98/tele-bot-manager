@@ -7,10 +7,7 @@ import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
 import com.vuog.telebotmanager.domain.bot.repository.BotCommandRepository;
 import com.vuog.telebotmanager.domain.bot.repository.BotLogRepository;
 import com.vuog.telebotmanager.domain.bot.repository.TelegramBotRepository;
-import com.vuog.telebotmanager.infrastructure.bot.BotRunner;
-import com.vuog.telebotmanager.infrastructure.bot.BotHandler;
-import com.vuog.telebotmanager.infrastructure.bot.LongPollingBotBase;
-import com.vuog.telebotmanager.infrastructure.bot.WebhookBotBase;
+import com.vuog.telebotmanager.infrastructure.bot.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +21,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -36,6 +34,7 @@ public class CommandHandlerServiceImpl implements CommandHandlerUseCase {
     private final BotCommandRepository commandRepository;
     private final BotRunner botRunner;
     private final MessageTemplateServiceImpl templateService;
+    private final CommandDispatcher commandDispatcher;
 
     public void handleUpdate(Update update, Long botId) {
         try {
@@ -67,6 +66,8 @@ public class CommandHandlerServiceImpl implements CommandHandlerUseCase {
             String[] parts = commandText.split("\\s+", 2);
             String baseCommand = parts[0].toLowerCase();
             String args = parts.length > 1 ? parts[1] : "";
+
+            baseCommand = baseCommand.startsWith("/") ? baseCommand.substring(1) : baseCommand;
             
             // Fetch bot-specific commands from database
             Optional<BotCommand> customCommand = commandRepository.findAllByIsEnabledTrueAndBotIdAndCommand(botId, baseCommand);
@@ -77,16 +78,16 @@ public class CommandHandlerServiceImpl implements CommandHandlerUseCase {
             } else {
                 // Handle built-in commands
                 switch (baseCommand) {
-                    case "/start":
+                    case "start":
                         handleStartCommand(update, botId);
                         break;
-                    case "/help":
+                    case "help":
                         handleHelpCommand(update, botId);
                         break;
-                    case "/info":
+                    case "info":
                         handleInfoCommand(update, botId);
                         break;
-                    case "/settings":
+                    case "settings":
                         handleSettingsCommand(update, botId, args);
                         break;
                     default:
@@ -114,7 +115,7 @@ public class CommandHandlerServiceImpl implements CommandHandlerUseCase {
             String lastName = update.getMessage().getFrom().getLastName();
             
             // Create template variables
-            java.util.Map<String, Object> templateVars = new java.util.HashMap<>();
+            Map<String, Object> templateVars = new java.util.HashMap<>();
             templateVars.put("username", username != null ? username : "User");
             templateVars.put("firstName", firstName != null ? firstName : "User");
             templateVars.put("lastName", lastName != null ? lastName : "");
@@ -122,7 +123,12 @@ public class CommandHandlerServiceImpl implements CommandHandlerUseCase {
             templateVars.put("args", args);
             
             // Render template from database
-            String responseText = templateService.renderTemplate(command.getResponseTemplate(), templateVars);
+            String responseText = "Unknown response. Please check the command syntax and try again.";
+            if (command.getHandlerMethod() != null) {
+                responseText = commandDispatcher.dispatch(command.getHandlerMethod(), new String[]{args});
+            } else if (command.getResponseTemplate() != null && !command.getResponseTemplate().isEmpty()) {
+                responseText = templateService.renderTemplate(command.getResponseTemplate(), templateVars);
+            }
             
             // Send response
             SendMessage message = createReplyMessage(chatId, responseText);

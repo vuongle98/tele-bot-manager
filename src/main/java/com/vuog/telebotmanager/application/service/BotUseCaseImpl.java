@@ -81,6 +81,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
      * @param pageable Pagination information
      * @return Page of BotResponseDto
      */
+    @Override
     public Page<BotResponseDto> getBots(BotQuery query, Pageable pageable) {
         Specification<TelegramBot> spec = buildBotSpecification(query);
         Page<TelegramBot> bots = botRepository.findAll(spec, pageable);
@@ -162,6 +163,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
      * @param id The ID of the bot
      * @return BotDetailResponseDto with detailed information
      */
+    @Override
     public BotDetailResponseDto getBotDetails(Long id) {
         TelegramBot bot = botRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Bot not found with ID: " + id));
@@ -175,7 +177,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
      * @param request The update request data
      * @return Updated BotResponseDto
      */
-    @Transactional
+    @Override
     public BotResponseDto updateBot(Long id, UpdateBotRequest request) {
         TelegramBot bot = botRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Bot not found with ID: " + id));
@@ -241,6 +243,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
      *
      * @param id The ID of the bot
      */
+    @Override
     public void refreshBotStatus(Long id) {
         TelegramBot bot = botRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Bot not found with ID: " + id));
@@ -261,6 +264,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
      * @param pageable Pagination information
      * @return Page of BotHistoryResponseDto
      */
+    @Override
     public Page<BotHistoryResponseDto> getAllByBot(Long id, Pageable pageable) {
         // Check if bot exists
         if (!botRepository.existsById(id)) {
@@ -277,9 +281,19 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
      * @param pageable Pagination information
      * @return Page of BotHistoryResponseDto
      */
+    @Override
     public Page<BotHistoryResponseDto> getAll(Pageable pageable) {
         Page<BotHistory> history = botHistoryRepository.findAll(pageable);
         return history.map(BotHistoryResponseDto::fromEntity);
+    }
+
+    @Override
+    public List<BotHistoryResponseDto> getAllByBot(Long botId) {
+        List<BotHistory> botHistories = botHistoryRepository.findAllByBotIdOrderByTimestampDesc(botId);
+
+        return botHistories.stream()
+                .map(BotHistoryResponseDto::fromEntity)
+                .toList();
     }
 
     /**
@@ -329,10 +343,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
         botRepository.save(bot);
     }
 
-    public Page<TelegramBot> getBotsPageable(Pageable pageable) {
-        return botRepository.findAll(pageable);
-    }
-
+    @Override
     public void startBot(Long botId) throws TelegramApiException {
         TelegramBot bot = botRepository.findById(botId)
                 .orElseThrow(() -> new BotNotFoundException(botId));
@@ -353,6 +364,8 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
             bot.setStatus(CommonEnum.BotStatus.RUNNING);
             botRepository.save(bot);
 
+            recordBotStatusChange(bot, CommonEnum.BotStatus.STOPPED, CommonEnum.BotStatus.RUNNING, "Started bot");
+
             log.info("Successfully started bot with ID: {}", botId);
         } catch (Exception e) {
             bot.setStatus(CommonEnum.BotStatus.ERRORED);
@@ -362,6 +375,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
         }
     }
 
+    @Override
     public void stopBot(Long botId) {
         TelegramBot bot = botRepository.findById(botId)
                 .orElseThrow(() -> new BotNotFoundException(botId));
@@ -382,6 +396,8 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
             bot.setStatus(CommonEnum.BotStatus.STOPPED);
             botRepository.save(bot);
 
+            recordBotStatusChange(bot, CommonEnum.BotStatus.RUNNING, CommonEnum.BotStatus.STOPPED, "Started bot");
+
             log.info("Successfully stopped bot with ID: {}", botId);
         } catch (Exception e) {
             bot.setStatus(CommonEnum.BotStatus.ERRORED);
@@ -391,6 +407,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
         }
     }
 
+    @Override
     public void deleteBot(Long botId) {
         TelegramBot bot = botRepository.findById(botId)
                 .orElseThrow(() -> new BotNotFoundException(botId));
@@ -410,6 +427,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
         log.info("Restarted bot with ID: {}", botId);
     }
 
+    @Override
     public List<BotStatusResponse> getAllBotStatuses() {
         return botRepository.findAll().stream()
                 .map(bot -> new BotStatusResponse(
@@ -422,6 +440,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
                 .toList();
     }
 
+    @Override
     public void updateBotConfiguration(Long botId, UpdateBotConfigCommand request) throws TelegramApiException {
         TelegramBot bot = botRepository.findById(botId)
                 .orElseThrow(() -> new BotNotFoundException(botId));
@@ -459,12 +478,14 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
         return scheduledMessageRepository.save(message);
     }
 
+    @Override
     public List<ScheduledMessage> getScheduledMessagesForBot(Long botId) {
         TelegramBot bot = botRepository.findById(botId)
                 .orElseThrow(() -> new BotNotFoundException(botId));
         return scheduledMessageRepository.findByBot(bot);
     }
 
+    @Override
     public void cancelAllScheduledMessageByBot(Long botId) {
         List<ScheduledMessage> messages = scheduledMessageRepository.findByBotId(botId);
 
@@ -476,6 +497,7 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
 //        scheduledMessageRepository.saveAll(messages);
     }
 
+    @Override
     public void cancelScheduledMessage(Long messageId) {
         ScheduledMessage message = scheduledMessageRepository.findById(messageId)
                 .orElseThrow(() -> new IllegalArgumentException("Message not found"));

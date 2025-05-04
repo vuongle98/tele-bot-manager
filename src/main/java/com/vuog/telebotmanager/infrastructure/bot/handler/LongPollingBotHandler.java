@@ -26,18 +26,19 @@ public class LongPollingBotHandler extends LongPollingBotBase {
             Message message = update.getMessage();
             String text = message.getText();
 
-            try {
-                if (text.startsWith("/")) {
-                    handleCommand(message);
-                    if (commandHandlerServiceImpl != null) {
-                        commandHandlerServiceImpl.handleUpdate(update, bot.getId());
-                    }
-                } else {
-                    handleMessage(message);
-                }
-            } catch (TelegramApiException e) {
-                log.error("Error processing update: {}", e.getMessage());
+            if (text.startsWith("/") && commandHandlerServiceImpl != null) {
+                commandHandlerServiceImpl.handleUpdate(update, bot.getId());
             }
+            // handleMessage(message);
+            // Handle other message types here, if needed
+            // For example, you can send a message to a group chat
+            // execute(new SendMessage(message.getChatId(), "Message received: " + message.getText()));
+            // You can also send a message to a specific user
+            // execute(new SendMessage(message.getChatId(), "Message received: " + message.getText()).setReplyToMessageId(message.getMessageId()));
+            // Or send a message to a specific chat using the chat id
+            // execute(new SendMessage(chatId, "Message received: " + message.getText()));
+            // You can also send a message to a specific user using the user id
+            // execute(new SendMessage(userId, "Message received: " + message.getText()));
         }
     }
 

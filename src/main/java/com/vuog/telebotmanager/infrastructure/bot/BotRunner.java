@@ -6,6 +6,7 @@ import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
 import com.vuog.telebotmanager.domain.bot.repository.TelegramBotRepository;
 import com.vuog.telebotmanager.infrastructure.bot.handler.BotHandlerFactory;
 import com.vuog.telebotmanager.infrastructure.bot.handler.LongPollingBotHandler;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -17,6 +18,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.BotSession;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,18 +35,35 @@ public class BotRunner implements BotHandlerRegistry {
 
     private CommandHandlerServiceImpl commandHandlerServiceImpl;
 
+//    @PostConstruct
+//    public void initBotRunner() throws TelegramApiException {
+//        List<TelegramBot> bots = botRepository.findAllByStatus(CommonEnum.BotStatus.RUNNING);
+//
+//        for (TelegramBot bot: bots) {
+//
+//            if (runningBots.containsKey(bot.getId())) {
+//                continue;
+//            }
+//            handleStartBot(bot);
+//        }
+//    }
+
     public synchronized void startBot(TelegramBot bot) throws TelegramApiException {
         if (runningBots.containsKey(bot.getId())) {
             throw new IllegalStateException("Bot " + bot.getId() + " is already running");
         }
 
+        handleStartBot(bot);
+    }
+
+    public synchronized void handleStartBot(TelegramBot bot) throws TelegramApiException {
         try {
             BotHandler handler = createHandler(bot);
 
             if (handler instanceof WebhookBotBase webhookBot) {
                 SetWebhook setWebhook = SetWebhook.builder()
-                    .url(bot.getConfiguration().getWebhookUrl())
-                    .build();
+                        .url(bot.getConfiguration().getWebhookUrl())
+                        .build();
                 botsApi.registerBot(webhookBot, setWebhook);
                 runningBots.put(bot.getId(), new BotInstance(null, handler));
             } else if (handler instanceof LongPollingBotBase pollingBot) {
@@ -59,7 +78,7 @@ public class BotRunner implements BotHandlerRegistry {
             }
 
             log.info("Started bot {} ({} - {})",
-                bot.getId(), bot.getName(), bot.getConfiguration().getUpdateMethod());
+                    bot.getId(), bot.getName(), bot.getConfiguration().getUpdateMethod());
         } catch (Exception e) {
             log.error("Failed to start bot {}", bot.getId(), e); // Changed to log full stack trace
             throw new TelegramApiException("Failed to start bot", e);

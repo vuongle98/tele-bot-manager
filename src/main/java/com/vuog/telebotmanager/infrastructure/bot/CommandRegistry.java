@@ -15,6 +15,14 @@ public class CommandRegistry {
         commandHandlers.put(command, handler);
     }
 
+    public void unregisterCommand(String command) {
+        commandHandlers.remove(command);
+    }
+
+    public boolean isRegistered(String command) {
+        return commandHandlers.containsKey(command);
+    }
+
     public Consumer<CommandContext> getHandler(String command) {
         return commandHandlers.get(command);
     }

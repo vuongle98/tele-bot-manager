@@ -29,4 +29,11 @@ public interface ScheduleMessageUseCase {
      */
     List<ScheduledMessage> getScheduledMessagesForBot(Long botId);
 
+
+    /**
+     * Cancel scheduled message of bot
+     * @param botId Id of the bot
+     */
+    public void cancelAllScheduledMessageByBot(Long botId);
+
 }

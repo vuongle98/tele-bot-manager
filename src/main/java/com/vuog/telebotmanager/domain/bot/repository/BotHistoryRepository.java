@@ -40,4 +40,6 @@ public interface BotHistoryRepository extends JpaRepository<BotHistory, Long> {
      * @return Paginated list of history records
      */
     Page<BotHistory> findAllByOrderByTimestampDesc(Pageable pageable);
+
+    List<BotHistory> findAllByBotIdOrderByTimestampDesc(Long botId);
 }

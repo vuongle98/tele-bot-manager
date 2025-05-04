@@ -28,13 +28,13 @@ public class CommandDataSeeder {
     private final CommandRegistryService commandRegistryService;
 
     @Bean
+    @Transactional
     public CommandLineRunner seedCommands() {
         return args -> {
             seedDefaultCommands();
         };
     }
 
-    @Transactional
     public void seedDefaultCommands() {
         List<TelegramBot> bots = botRepository.findAll();
         log.info("Checking command data for {} bots", bots.size());
@@ -74,16 +74,17 @@ public class CommandDataSeeder {
         // Weather command
         BotCommand weatherCommand = new BotCommand();
         weatherCommand.setBot(bot);
-        weatherCommand.setCommand("/weather");
+        weatherCommand.setCommand("weather");
         weatherCommand.setDescription("Get weather information for a location");
         weatherCommand.setResponseTemplate("Weather information for {{args}}:\n\n🌡️ Temperature: 25°C\n💨 Wind: 5 km/h\n💧 Humidity: 65%\n\nNote: This is a demo response. Integrate with a weather API for real data.");
         weatherCommand.setIsEnabled(true);
+        weatherCommand.setHandlerMethod("showWeather");
         commands.add(weatherCommand);
 
         // Quote command
         BotCommand quoteCommand = new BotCommand();
         quoteCommand.setBot(bot);
-        quoteCommand.setCommand("/quote");
+        quoteCommand.setCommand("quote");
         quoteCommand.setDescription("Get a random inspirational quote");
         quoteCommand.setResponseTemplate("\"The only way to do great work is to love what you do.\" — Steve Jobs\n\nRequested by: {{firstName}} {{lastName}}");
         quoteCommand.setIsEnabled(true);
@@ -92,7 +93,7 @@ public class CommandDataSeeder {
         // Echo command
         BotCommand echoCommand = new BotCommand();
         echoCommand.setBot(bot);
-        echoCommand.setCommand("/echo");
+        echoCommand.setCommand("echo");
         echoCommand.setDescription("Echo back your message");
         echoCommand.setResponseTemplate("You said: {{args}}");
         echoCommand.setIsEnabled(true);
@@ -101,7 +102,7 @@ public class CommandDataSeeder {
         // Joke command
         BotCommand jokeCommand = new BotCommand();
         jokeCommand.setBot(bot);
-        jokeCommand.setCommand("/joke");
+        jokeCommand.setCommand("joke");
         jokeCommand.setDescription("Get a random joke");
         jokeCommand.setResponseTemplate("Why don't scientists trust atoms?\nBecause they make up everything! 😄");
         jokeCommand.setIsEnabled(true);
@@ -110,7 +111,7 @@ public class CommandDataSeeder {
         // Custom greeting command
         BotCommand greetingCommand = new BotCommand();
         greetingCommand.setBot(bot);
-        greetingCommand.setCommand("/hello");
+        greetingCommand.setCommand("hello");
         greetingCommand.setDescription("Get a personalized greeting");
         greetingCommand.setResponseTemplate("Hello, {{firstName}}! Welcome to {{botName}}. How can I help you today?");
         greetingCommand.setIsEnabled(true);

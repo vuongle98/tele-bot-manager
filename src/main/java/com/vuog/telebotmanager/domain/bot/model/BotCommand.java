@@ -32,9 +32,15 @@ public class BotCommand {
     @Column(length = 255)
     private String description;
 
+    private String handlerMethod;
+
     // Optional field to store additional configuration as JSON
     @Column(columnDefinition = "TEXT")
     private String additionalConfig;
+
+    public String getCommandWithPrefix() {
+        return "/" + command;
+    }
     
     @Override
     public String toString() {
