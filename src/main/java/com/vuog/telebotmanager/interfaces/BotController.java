@@ -191,9 +191,11 @@ public class BotController {
         );
     }
 
-    @DeleteMapping("/scheduled-messages/{messageId}/cancel")
-    public ResponseEntity<Void> cancelScheduledMessage(@PathVariable Long messageId) {
-        scheduleMessageUseCase.cancelScheduledMessage(messageId);
+    @DeleteMapping("/{id}/scheduled-messages/{messageId}/cancel")
+    public ResponseEntity<Void> cancelScheduledMessage(
+            @PathVariable Long id,
+            @PathVariable Long messageId) {
+        scheduleMessageUseCase.cancelScheduledMessage(id, messageId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -20,7 +20,7 @@ public interface ScheduleMessageUseCase {
      * Cancel a scheduled message
      * @param messageId ID of the message to cancel
      */
-    void cancelScheduledMessage(Long messageId);
+    void cancelScheduledMessage(Long botId, Long messageId);
     
     /**
      * Get all scheduled messages for a bot

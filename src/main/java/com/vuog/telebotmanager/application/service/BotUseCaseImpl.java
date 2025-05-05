@@ -498,8 +498,8 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
     }
 
     @Override
-    public void cancelScheduledMessage(Long messageId) {
-        ScheduledMessage message = scheduledMessageRepository.findById(messageId)
+    public void cancelScheduledMessage(Long botId, Long messageId) {
+        ScheduledMessage message = scheduledMessageRepository.findByBotIdAndId(botId, messageId)
                 .orElseThrow(() -> new IllegalArgumentException("Message not found"));
         message.setIsCancelled(true);
         scheduledMessageRepository.save(message);

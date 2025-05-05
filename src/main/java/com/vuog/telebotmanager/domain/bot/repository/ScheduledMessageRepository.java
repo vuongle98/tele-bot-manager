@@ -38,5 +38,5 @@ public interface ScheduledMessageRepository {
 
     void delete(ScheduledMessage message);
 
-    Optional<ScheduledMessage> findById(Long id);
+    Optional<ScheduledMessage> findByBotIdAndId(Long botId, Long messageId);
 }
