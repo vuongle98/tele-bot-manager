@@ -16,6 +16,7 @@ import com.vuog.telebotmanager.interfaces.dto.query.BotQuery;
 import com.vuog.telebotmanager.interfaces.dto.request.UpdateBotRequest;
 import com.vuog.telebotmanager.interfaces.dto.response.BotDetailResponseDto;
 import com.vuog.telebotmanager.interfaces.dto.response.BotHistoryResponseDto;
+import com.vuog.telebotmanager.interfaces.rest.dto.BotStatistic;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -197,5 +198,11 @@ public class BotController {
             @PathVariable Long messageId) {
         scheduleMessageUseCase.cancelScheduledMessage(id, messageId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<ApiResponse<BotStatistic>> statistics() {
+        BotStatistic statistic = botService.statistics();
+        return ResponseEntity.ok(ApiResponse.success(statistic));
     }
 }

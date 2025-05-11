@@ -8,6 +8,7 @@ import com.vuog.telebotmanager.domain.bot.model.TelegramBot;
 import com.vuog.telebotmanager.interfaces.dto.query.BotQuery;
 import com.vuog.telebotmanager.interfaces.dto.request.UpdateBotRequest;
 import com.vuog.telebotmanager.interfaces.dto.response.BotDetailResponseDto;
+import com.vuog.telebotmanager.interfaces.rest.dto.BotStatistic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -39,4 +40,6 @@ public interface BotUseCase {
     BotResponseDto updateBot(Long id, UpdateBotRequest request);
 
     void refreshBotStatus(Long id);
+
+    BotStatistic statistics();
 }

@@ -23,6 +23,7 @@ import com.vuog.telebotmanager.interfaces.dto.query.BotQuery;
 import com.vuog.telebotmanager.interfaces.dto.request.UpdateBotRequest;
 import com.vuog.telebotmanager.interfaces.dto.response.BotDetailResponseDto;
 import com.vuog.telebotmanager.interfaces.dto.response.BotHistoryResponseDto;
+import com.vuog.telebotmanager.interfaces.rest.dto.BotStatistic;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,7 @@ import jakarta.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -103,6 +105,13 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
                 predicates.add(criteriaBuilder.like(
                     criteriaBuilder.lower(root.get("name")),
                     "%" + query.getName().toLowerCase() + "%"
+                ));
+            }
+
+            if (Objects.nonNull(query.getSearch()) && !query.getSearch().isBlank()) {
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("name")),
+                        "%" + query.getSearch().toLowerCase() + "%"
                 ));
             }
 
@@ -255,6 +264,19 @@ public class BotUseCaseImpl implements BotUseCase, ScheduleMessageUseCase, BotHi
         // This would be where you'd check if the bot is actually running
         // For demonstration, we'll record the current status in history
         recordBotStatusChange(bot, bot.getStatus(), bot.getStatus(), "Status refresh requested by user");
+    }
+
+    @Override
+    public BotStatistic statistics() {
+
+        BotStatistic statistic = new BotStatistic();
+        statistic.setActiveBots(2L);
+        statistic.setTotalBots(10L);
+        statistic.setActiveCommands(20L);
+        statistic.setTotalCommands(100L);
+        statistic.setTotalScheduledMessages(10L);
+        statistic.setActiveScheduledMessages(5L);
+        return statistic;
     }
 
     /**

@@ -19,6 +19,7 @@ public class BotQuery implements Serializable {
     private Long ownerId;
     private Instant createdAfter;
     private Instant createdBefore;
-    private String updateMethod;
+    private CommonEnum.UpdateMethod updateMethod;
     private Boolean scheduled;
+    private String search;
 }
